@@ -50,6 +50,7 @@ class DoublyLinkedList():
         self.length += 1
         
     def prepend(self, data):
+        # make a new node
         new_node = Node(data)
         if self.data == None:
             # if the linked list is empty, make the head and tail equal to the new node
