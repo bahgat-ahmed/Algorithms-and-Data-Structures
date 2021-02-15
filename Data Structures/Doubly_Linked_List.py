@@ -67,7 +67,6 @@ class DoublyLinkedList():
         self.length += 1
         
     def insert(self, position, data):
-
         if position == 0:
             # inserting at the first position is the same as prepending
             self.prepend(data)
@@ -93,3 +92,69 @@ class DoublyLinkedList():
             new_node.next.previous = new_node
             # incrementing Linked List length by 1
             self.length += 1
+            
+    def delete_by_value(self, data):
+        if self.head == None:
+            # if Linked List is empty
+            print("Linked List is empty. There is nothing to delete.")
+            # get out of the function
+            return
+        if (self.length == 1) or (self.length == 2):
+            # if Linked List contains one or two nodes
+            if (self.head.data != data) and (self.tail.data != data):
+                # if value isn't found
+                print('Value not found!')
+            elif self.length == 1:
+                # if value is found and there is only one Node, then point head to Null
+                self.head = None
+                # point tail to head
+                self.tail = self.head
+            elif self.head.data == data:
+                # if value is found at the Linked List head, and there are two nodes, point head to tail
+                self.head = self.tail
+            elif self.tail.data == data:
+                # if value is found at the Linked List tail, and there are two nodes, point tail to head
+                self.tail = self.head
+            # decrementing Linked List length by 1
+            self.length -= 1
+                
+        else:
+            # if Linked List contains more than one node
+            # position tracker
+            current_pos = 0
+            # make a pointer to the Linked List head
+            current_node = self.head
+            # traverse through the list until you find the data, and change the position accordingly
+            while (current_node.data != data) and (current_pos <= self.length - 1):
+                current_node = current_node.next
+                current_pos += 1
+                
+            if current_node.data != data:
+                # if value isn't found
+                print('Value not found!')
+            else:
+                # if the value is found at the Linked List head
+                if current_pos == 0:
+                    # make the head point to the next node
+                    self.head = current_node.next
+                    # point the current_node next, and previous pointers to Null
+                    current_node.previous = None
+                    current_node.next = None
+                # if value is found at the Linked List tail
+                elif current_pos == self.length - 1:
+                    # point the previous node next pointer to Null
+                    current_node.previous.next = None
+                    # point the current node previous pointer to Null
+                    current_node.previous = None
+                # if value is found at some where in the middle of the Linked List
+                else:
+                    # point the previous node next pointer to the next node 
+                    current_node.previous.next = current_node.next
+                    # point the next node previous pointer to the previous node
+                    current_node.next.previous = current_node.previous
+                    # point the current_node previous, and next pointers to Null
+                    current_node.previous = None
+                    current_node.next = None
+                    
+                # decrementing Linked List length by 1
+                self.length -= 1
