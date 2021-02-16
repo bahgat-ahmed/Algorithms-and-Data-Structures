@@ -158,3 +158,53 @@ class DoublyLinkedList():
                     
                 # decrementing Linked List length by 1
                 self.length -= 1
+                
+    def delete_by_position(self, position):
+        # handling invalid inputs
+        # given that the input position is zero index-based (i.e. first position starts from zero)
+        if self.head == None:
+            # if Linked List is empty
+            print("Linked List is empty. There is nothing to delete.")
+            # get out of the function
+            return
+        if (position < 0) and (position > self.length - 1):
+            print("This position doesn't exist in the Linked List!")
+            # get out of the function
+            return
+        # handling valid inputs
+        # if the first position is chosen
+        if position == 0:
+            # update the Linked List head to be the next node
+            self.head = self.head.next
+            # if the Linked List had only one or two nodes before deleting the first node
+            if (self.head == None) or (self.head.next == None):
+                # make the tail point to the head
+                self.tail = self.head
+            # else if the Linked List had more than two nodes before deleting the first node
+            elif self.head != None:
+                # make the previous pointer of the new head point to Null
+                self.head.previous = None
+        # if the last position is chosen
+        elif position == self.length - 1:
+            # make the next pointer of the node before the last node point to Null
+            self.tail.previous.next = None
+            # make the previous pointer of the last node point to Null to delete this node
+            self.tail.previous = None
+        # if a position somewhere in the middle is chosen
+        else:
+            # track the Linkded List for traversing, starting form its head
+            current_node = self.head
+            # traverse throught the Linked List until you find the position you want to delete
+            for i in range(position - 1):
+                current_node = current_node.next
+            # make the next pointer of the previous node point to the next node
+            current_node.previous.next = current_node.next
+            # make the previous pointer of the next node point to the previous node
+            current_node.next.previous = current_node.previous
+            # make the previous pointer of the current node point to Null for deleting its first link
+            current_node.previous = None
+            # make the next pointer of the current node point to Null for deleting it completely from the
+            # Linked List
+            current_node.next = None
+        # decrementing Linked List length by 1  
+        self.length -= 1
