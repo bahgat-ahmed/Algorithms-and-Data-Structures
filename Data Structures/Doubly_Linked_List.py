@@ -52,7 +52,7 @@ class DoublyLinkedList():
     def prepend(self, data):
         # make a new node
         new_node = Node(data)
-        if self.data == None:
+        if self.head == None:
             # if the linked list is empty, make the head and tail equal to the new node
             self.head = new_node
             self.tail = self.head
@@ -63,10 +63,11 @@ class DoublyLinkedList():
             self.head.previous = new_node
             # let the data in the LinkedList head be the new node data thus updating the head value
             self.head = new_node
-        # incrementing Linked List length by 1
+        # incrementing Linked List length by 1   
         self.length += 1
         
     def insert(self, position, data):
+
         if position == 0:
             # inserting at the first position is the same as prepending
             self.prepend(data)
@@ -110,11 +111,21 @@ class DoublyLinkedList():
                 # point tail to head
                 self.tail = self.head
             elif self.head.data == data:
-                # if value is found at the Linked List head, and there are two nodes, point head to tail
+                # if value is found at the Linked List head, and there are two nodes, point head next
+                # pointer to Null
+                self.head.next = None
+                # point head to tail
                 self.head = self.tail
+                # point tail previous pointer to Null
+                self.tail.previous = None
             elif self.tail.data == data:
-                # if value is found at the Linked List tail, and there are two nodes, point tail to head
+                # if value is found at the Linked List tail, and there are two nodes, point tail previous
+                # pointer to Null
+                self.tail.previous = None
+                # point tail to head
                 self.tail = self.head
+                # point head next pointer to Null
+                self.head.next = None
             # decrementing Linked List length by 1
             self.length -= 1
                 
@@ -124,41 +135,47 @@ class DoublyLinkedList():
             current_pos = 0
             # make a pointer to the Linked List head
             current_node = self.head
-            # traverse through the list until you find the data, and change the position accordingly
-            while (current_node.data != data) and (current_pos <= self.length - 1):
-                current_node = current_node.next
-                current_pos += 1
-                
-            if current_node.data != data:
-                # if value isn't found
-                print('Value not found!')
-            else:
-                # if the value is found at the Linked List head
-                if current_pos == 0:
-                    # make the head point to the next node
-                    self.head = current_node.next
-                    # point the current_node next, and previous pointers to Null
-                    current_node.previous = None
-                    current_node.next = None
-                # if value is found at the Linked List tail
-                elif current_pos == self.length - 1:
-                    # point the previous node next pointer to Null
-                    current_node.previous.next = None
-                    # point the current node previous pointer to Null
-                    current_node.previous = None
-                # if value is found at some where in the middle of the Linked List
+            try:
+                # traverse through the list until you find the data, and change the position accordingly
+                while (current_node.data != data) and (current_pos <= self.length - 1):
+                    current_node = current_node.next
+                    current_pos += 1
+
+                if current_node.data != data:
+                    # if value isn't found
+                    print('Value not found!')
                 else:
-                    # point the previous node next pointer to the next node 
-                    current_node.previous.next = current_node.next
-                    # point the next node previous pointer to the previous node
-                    current_node.next.previous = current_node.previous
-                    # point the current_node previous, and next pointers to Null
-                    current_node.previous = None
-                    current_node.next = None
+                    # if the value is found at the Linked List head
+                    if current_pos == 0:
+                        # make the head point to the next node
+                        self.head = current_node.next
+                        # point the current_node next, and previous pointers to Null
+                        current_node.previous = None
+                        current_node.next = None
+                    # else if value is found at the Linked List tail
+                    elif current_pos == self.length - 1:                   
+                        self.tail = current_node.previous
+                        # point the previous node next pointer to Null
+                        self.tail.next = None
+                        # point the current node previous pointer to Null
+                        current_node.previous = None
+                    # else if value is found at some where in the middle of the Linked List
+                    else:
+                        # point the previous node next pointer to the next node 
+                        current_node.previous.next = current_node.next
+                        # point the next node previous pointer to the previous node
+                        current_node.next.previous = current_node.previous
+                        # point the current_node previous, and next pointers to Null
+                        current_node.previous = None
+                        current_node.next = None
+
+                    # decrementing Linked List length by 1
+                    self.length -= 1
                     
-                # decrementing Linked List length by 1
-                self.length -= 1
-                
+            except AttributeError:
+                print("Given value not found.")
+                return
+
     def delete_by_position(self, position):
         # handling invalid inputs
         # given that the input position is zero index-based (i.e. first position starts from zero)
@@ -167,7 +184,7 @@ class DoublyLinkedList():
             print("Linked List is empty. There is nothing to delete.")
             # get out of the function
             return
-        if (position < 0) and (position > self.length - 1):
+        if (position < 0) or (position > self.length - 1):
             print("This position doesn't exist in the Linked List!")
             # get out of the function
             return
@@ -186,16 +203,20 @@ class DoublyLinkedList():
                 self.head.previous = None
         # if the last position is chosen
         elif position == self.length - 1:
-            # make the next pointer of the node before the last node point to Null
-            self.tail.previous.next = None
-            # make the previous pointer of the last node point to Null to delete this node
-            self.tail.previous = None
+            # hold the current tail
+            current_node = self.tail
+            # set the tail to be the previous node
+            self.tail = self.tail.previous
+            # point the tail next pointer to Null
+            self.tail.next = None
+            # make the previous pointer of the last node (tail) point to Null to delete this node
+            current_node.previous = None
         # if a position somewhere in the middle is chosen
         else:
             # track the Linkded List for traversing, starting form its head
             current_node = self.head
             # traverse throught the Linked List until you find the position you want to delete
-            for i in range(position - 1):
+            for i in range(position):
                 current_node = current_node.next
             # make the next pointer of the previous node point to the next node
             current_node.previous.next = current_node.next
