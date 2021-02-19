@@ -34,3 +34,18 @@ class BST():
                     raise
                     
         self.num_of_nodes += 1
+        
+    def search(self, data):
+        if self.root == None:
+            print("The Tree is Empty.")
+        else:
+            current_node = self.root
+            for i in range(self.num_of_nodes):
+                if data == current_node.data:
+                    print("Value is found")
+                    return
+                elif data > current_node.data:
+                    current_node = current_node.right
+                else:
+                    current_node = current_node.left
+            print("Value is not found")
